@@ -83,7 +83,7 @@ function displayAllWeather(city) {
             // (2/2) Display Weather: Forecast
             for (var i = 1; i < 6; i++) {
                 // Create the card
-                var forecastCol = $("<div class='col-2'>");
+                var forecastCol = $("<div class='forecast col-2'>");
                 forecastRow.append(forecastCol);
                 var forecastCard = $("<div class='card text-white bg-primary'>");
                 forecastCol.append(forecastCard);
@@ -136,12 +136,26 @@ function selectedButton(event) {
 
     console.log("Hi");
 
-    if (event.target.matches("button")) {
-        var selectedCity = event.target.textContent;
+    var selectedCity = event.target;
 
-        console.log(selectedCity);
-        displayAllWeather(selectedCity);
+    console.log("Selected City " + selectedCity);
+
+    if (event.target.matches("button")) {
+        var eventCity = selectedCity.textContent;
+
+        console.log(eventCity);
+        displayAllWeather(eventCity);
     }
+
+
+    //var selectedCity = event.target;
+
+    // if (event.target.matches("button")) {
+    //     var selectedCity = event.target.textContent;
+
+    //     console.log(selectedCity);
+    //     displayAllWeather(selectedCity);
+    // }
 }
 
 function pageRefresh() {
@@ -150,7 +164,7 @@ function pageRefresh() {
 
     if (listOfCities !== null) {
         recentCity = listOfCities[listOfCities.length-1];
-        
+
         displayAllWeather(recentCity);
     }
 }

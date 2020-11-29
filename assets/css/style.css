@@ -1,4 +1,30 @@
 
+
+
+
+.stored-city {
+    width: 100%;
+    max-width: 375px;
+}
+
+#city-entry {
+    height: 40px;
+    width: 145px;
+}
+
+.col-3 {
+    height: 475px;
+}
+
+.current-div {
+    height: 350px;
+}
+
+.forecast {
+    min-width: 175px;
+    text-align: center;
+}
+
 /* UV Index Color References */
 
 .green {
