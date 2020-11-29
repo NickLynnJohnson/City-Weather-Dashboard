@@ -1,6 +1,7 @@
 
 // Declare variables
-var city = "Los Angeles";
+var city = "";
+var listOfCities = [];
 // Current city/date variables
 var currentDiv = $(".current-div");
 var cityEntry = $("#city-entry");
@@ -10,12 +11,6 @@ var currentHumid = $("#current-humid");
 var currentWind = $("#current-wind");
 var currentUV = $("#current-uv");
 var currentImage = $("#current-image");
-
-// Start with Los Angeles already included in the array so that the user sees how the dashboard works
-//var listOfCities = ["Los Angeles"];
-var listOfCities = [];
-//var cityList = listOfCities;
-//localStorage.setItem("listOfCities", JSON.stringify(cityList));
 var buttonsList = $("#buttons-list");
 
 // Forecast date variables
@@ -26,9 +21,9 @@ var APIKey = "479089a9990486902ba42a70c1a35171";
 
 function displayAllWeather(city) {
 
-    // First, call OpenWeatherMap's "Current Weather Data"  by city to get that city's Lat and Lon coordinates
+    forecastRow.empty();
 
-    //var city = $(this).attr("data-value");
+    // First, call OpenWeatherMap's "Current Weather Data"  by city to get that city's Lat and Lon coordinates
 
     var queryURL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${APIKey}`;
 
@@ -111,7 +106,7 @@ function displayAllWeather(city) {
 }
 
 function populateCityList() {
-     buttonsList.empty();
+    buttonsList.empty();
 
      var cityList = JSON.parse(localStorage.getItem("allcities"));
 
@@ -136,27 +131,36 @@ function searchedCity(event) {
     }
 }
 
-function selectedButton() {
-    //event.preventDefault();
+function selectedButton(event) {
+    event.preventDefault();
 
     console.log("Hi");
 
-    var city = event.target.textContent;
+    if (event.target.matches("button")) {
+        var selectedCity = event.target.textContent;
 
-    console.log(city);
-    displayAllWeather(city);
-    // if (event.target.matches("button")) {
-    //     city = chosenButton.textContent.trim();
-    //     displayAllWeather(city);
-    // }
+        console.log(selectedCity);
+        displayAllWeather(selectedCity);
+    }
+}
+
+function pageRefresh() {
+    
+    var listOfCities = JSON.parse(localStorage.getItem("allcities"));
+
+    if (listOfCities !== null) {
+        recentCity = listOfCities[listOfCities.length-1];
+        
+        displayAllWeather(recentCity);
+    }
 }
 
 
 
-
-// Initiating click handlers
+// Initiating actions
 $("#add-city").on("click", searchedCity);
-$(".stored-city").on("click", selectedButton);
+$(document).on("click", selectedButton);
+$(window).on("load", pageRefresh);
 
 
 
