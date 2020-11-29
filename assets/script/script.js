@@ -16,19 +16,22 @@ var listOfCities = [];
 //localStorage.setItem("listOfCities", JSON.stringify(cityList));
 var buttonsList = $("#buttons-list");
 
-
-
 // Forecast date variables
 var forecastRow = $(".forecast-row");
 
 // API calls section
 var APIKey = "479089a9990486902ba42a70c1a35171";
 
-function displayAllWeather(passedCity) {
+function displayAllWeather() {
 
     // First, call OpenWeatherMap's "Current Weather Data"  by city to get that city's Lat and Lon coordinates
 
-    var city = passedCity;
+    //var city = passedCity;
+
+    currentDiv.empty();
+    forecastRow.empty();
+
+    var city = $(this).attr("data-value");
     var queryURL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${APIKey}`;
 
     $.ajax({
@@ -115,20 +118,34 @@ function displayAllWeather(passedCity) {
 function displayButtons() {
     buttonsList.empty();
 
-    var enteredCity = localStorage.getItem("listOfCities");
-    enteredCity = JSON.parse(enteredCity);
+    //var enteredCity = localStorage.getItem("listOfCities");
+
+    var enteredCity = JSON.parse(localStorage.getItem("listOfCities")) || [];
+    console.log(enteredCity);
+    //enteredCity = JSON.parse(enteredCity);
+
+    // if (enteredCity.length > 0) {
+    //     displayAllWeather(enteredCity[enteredCity.length-1]);
+    // }
 
     if (enteredCity.length > 0) {
-        displayAllWeather(enteredCity[enteredCity.length-1]);
+        displayAllWeather(enteredCity);
     }
 
     for (var i = 0; i < enteredCity.length; i++) {
-        listButton = $("<button class='stored-city list-group-item'>").attr("data-name", enteredCity[i]).text(enteredCity[i]);
+        listButton = $("<button class='stored-city list-group-item'>").attr("data-value", enteredCity[i]).text(enteredCity[i]);
+        listButton.attr("id", "city" + [i]);
         buttonsList.prepend(listButton);  
     }
 
     var cityList = enteredCity;
     localStorage.setItem("listOfCities", JSON.stringify(cityList));
+
+    $(document).ready(function(){
+        $(".stored-city").trigger("click");
+        // $("#city0").trigger("click");
+    });
+
 }
 
 // (2/3) Store a city
@@ -148,7 +165,8 @@ $("#add-city").on("click", function(event) {
 
 // (3/3) Make the searched cities in the list clickable/searchable
 
-$(document).on("click", "stored-city", displayAllWeather);
+$(document).on("click", ".stored-city", displayAllWeather);
+// $(document).on("click", displayAllWeather);
 
 // Initiate the webpage
 displayButtons();
