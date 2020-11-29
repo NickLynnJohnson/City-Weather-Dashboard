@@ -1,7 +1,9 @@
 
 // Declare variables
+var city = "Los Angeles";
 // Current city/date variables
 var currentDiv = $(".current-div");
+var cityEntry = $("#city-entry");
 var currentCity = $("#current-city");
 var currentTemp = $("#current-temp");
 var currentHumid = $("#current-humid");
@@ -22,16 +24,12 @@ var forecastRow = $(".forecast-row");
 // API calls section
 var APIKey = "479089a9990486902ba42a70c1a35171";
 
-function displayAllWeather() {
+function displayAllWeather(city) {
 
     // First, call OpenWeatherMap's "Current Weather Data"  by city to get that city's Lat and Lon coordinates
 
-    //var city = passedCity;
+    //var city = $(this).attr("data-value");
 
-    currentDiv.empty();
-    forecastRow.empty();
-
-    var city = $(this).attr("data-value");
     var queryURL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${APIKey}`;
 
     $.ajax({
@@ -112,64 +110,53 @@ function displayAllWeather() {
     });
 }
 
-// Search for a city section
+function populateCityList() {
+     buttonsList.empty();
 
-// (1/3) Populate the list with historical city searches
-function displayButtons() {
-    buttonsList.empty();
+     var cityList = JSON.parse(localStorage.getItem("allcities"));
 
-    //var enteredCity = localStorage.getItem("listOfCities");
-
-    var enteredCity = JSON.parse(localStorage.getItem("listOfCities")) || [];
-    console.log(enteredCity);
-    //enteredCity = JSON.parse(enteredCity);
-
-    // if (enteredCity.length > 0) {
-    //     displayAllWeather(enteredCity[enteredCity.length-1]);
-    // }
-
-    if (enteredCity.length > 0) {
-        displayAllWeather(enteredCity);
-    }
-
-    for (var i = 0; i < enteredCity.length; i++) {
-        listButton = $("<button class='stored-city list-group-item'>").attr("data-value", enteredCity[i]).text(enteredCity[i]);
-        listButton.attr("id", "city" + [i]);
-        buttonsList.prepend(listButton);  
-    }
-
-    var cityList = enteredCity;
-    localStorage.setItem("listOfCities", JSON.stringify(cityList));
-
-    $(document).ready(function(){
-        $(".stored-city").trigger("click");
-        // $("#city0").trigger("click");
-    });
-
+     for (i = 0; i < cityList.length; i++) {
+         var cityButton = $("<button class='stored-city list-group-item'>").text(cityList[i]);
+         buttonsList.prepend(cityButton);  
+     }
 }
 
-// (2/3) Store a city
 
-$("#add-city").on("click", function(event) {
+function searchedCity(event) {
     event.preventDefault();
 
-    var city = $("#city-entry").val().trim();
+    if (cityEntry.val().trim() !== "") {
+        city = cityEntry.val().trim();
+        displayAllWeather(city)
 
-    listOfCities.push(city);
+        listOfCities.push(city.toUpperCase());
+        localStorage.setItem("allcities", JSON.stringify(listOfCities));
 
-    var cityList = listOfCities;
-    localStorage.setItem("listOfCities", JSON.stringify(cityList))
+        populateCityList();
+    }
+}
 
-    displayButtons();
-})
+function selectedButton() {
+    //event.preventDefault();
 
-// (3/3) Make the searched cities in the list clickable/searchable
+    console.log("Hi");
 
-$(document).on("click", ".stored-city", displayAllWeather);
-// $(document).on("click", displayAllWeather);
+    var city = event.target.textContent;
 
-// Initiate the webpage
-displayButtons();
+    console.log(city);
+    displayAllWeather(city);
+    // if (event.target.matches("button")) {
+    //     city = chosenButton.textContent.trim();
+    //     displayAllWeather(city);
+    // }
+}
+
+
+
+
+// Initiating click handlers
+$("#add-city").on("click", searchedCity);
+$(".stored-city").on("click", selectedButton);
 
 
 
